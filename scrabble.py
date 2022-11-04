@@ -85,19 +85,17 @@ def find_longest_word(tiles, dictionary):
     current_longest = ''
     dictionary = list(dictionary)
     for word in dictionary:
-        # console.print(current_longest)
+        console.print(current_longest)
         word = str(word)
-        not_in_tiles = False
+        not_in_tiles = 0
         if len(word) > 7:
             continue
         for letter in word:
-            if letter not in tiles:
-                not_in_tiles = True
-                # console.print('break')
+            if letter in tiles:
+                word_length += 1
+            else:
                 break
-        if not_in_tiles == False:
-            console.print(f'no break: {word}')
-        if len(word) > len(current_longest) and not_in_tiles == False:
+        if len(word) > len(current_longest) and not_in_tiles == 0:
             current_longest = word
     return current_longest
                     
@@ -113,11 +111,11 @@ def main():
     console.print(longest_word)
 
 
-# main()
+main()
 
-test_dictionary = ['world', 'it', 'is', 'seb', 'hello']
+# test_dictionary = ['world', 'it', 'is', 'seb', 'hello']
 
-test_tiles = ['h', 'l', 'e', 'i', 't', 'l', 'o']
+# test_tiles = ['h', 'l', 'e', 'i', 't', 'l', 'o']
 
-console.print(find_longest_word(test_tiles, test_dictionary))
+# console.print(find_longest_word(test_tiles, test_dictionary))
 
