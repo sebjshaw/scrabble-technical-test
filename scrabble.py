@@ -22,27 +22,37 @@ ONE_TILE = ['k', 'j', 'x', 'q', 'z']
 
 def word_score(word, is_triple):
     total = 0
+    heighest_letter = 0
     for letter in word:
+        current_letter = 0
 
         if letter in ONE_POINT_LETTERS:
-            total += 1
+            current_letter = 1
         elif letter in TWO_POINT_LETTERS:
-            total += 2
+            current_letter = 2
         elif letter in THREE_POINT_LETTERS:
-            total += 3
+            current_letter = 3
         elif letter in FOUR_POINT_LETTERS:
-            total += 4
+            current_letter = 4
         elif letter == FIVE_POINT_LETTER:
-            total += 5
+            current_letter = 5
         elif letter in EIGHT_POINT_LETTERS:
-            total += 8
+            current_letter = 8
         elif letter in TEN_POINT_LETTERS:
-            total += 10
+            current_letter = 10
         else:
             console.print("Word must only contain letters")
         
+        if current_letter > heighest_letter:
+            heighest_letter = current_letter
+        
+        total += current_letter
 
-    return total 
+    if is_triple == 'y':
+        return total + 2*heighest_letter
+
+    return total
+
 
 
 def create_bag_of_letters():
@@ -82,6 +92,13 @@ def get_dictionary():
     return open("dictionary.txt", "r")
 
 
+def find_heighest_scoring_word_with_triples(word, current_word):
+    
+    if word_score(word, "y") > word_score(current_word, "y"):
+        current_word = word
+    return current_word
+
+
 def find_longest_word(word, current_word):
     if len(word) > len(current_word):
         current_word = word
@@ -90,7 +107,7 @@ def find_longest_word(word, current_word):
 
 def find_heighest_scoring_word(word, current_word):
 
-    if word_score(word) > word_score(current_word):
+    if word_score(word, "n") > word_score(current_word, "n"):
         current_word = word
     return current_word
 
@@ -98,11 +115,11 @@ def find_heighest_scoring_word(word, current_word):
 
 
 
-def find_word(l_or_h, tiles, dictionary):
+def find_word(l_h_or_t, tiles, dictionary):
     current_word = ''
-    dictionary = list(dictionary)
+    words = list(dictionary)
     not_in_word = 0
-    for word in dictionary:
+    for word in words:
         word = word[:-1]
         removed_letters = []
 
@@ -116,10 +133,12 @@ def find_word(l_or_h, tiles, dictionary):
             else: 
                 not_in_word = 1
 
-        if not_in_word == 0 and l_or_h == 'l':
+        if not_in_word == 0 and l_h_or_t == 'l':
             current_word = find_longest_word(word, current_word)
-        elif not_in_word == 0 and l_or_h == 'h':
+        elif not_in_word == 0 and l_h_or_t == 'h' :
             current_word = find_heighest_scoring_word(word, current_word)
+        elif not_in_word == 0 and l_h_or_t == 't':
+            current_word = find_heighest_scoring_word_with_triples(word, current_word)
         for letter in removed_letters:
             tiles.append(letter)
         not_in_word = 0
@@ -131,14 +150,17 @@ def main():
     players_tiles = get_players_tiles(bag_of_letters)
     dictionary = get_dictionary()
     console.print(players_tiles)
-    l_or_h = Prompt.ask("Do you want the longest or the heighest scoring (l or h)?")
-    if l_or_h == 'l':
-        longest_word = find_word(l_or_h, players_tiles, dictionary)
-    
+    l_h_or_t = ''
+    l_h_or_t = Prompt.ask("Do you want the longest, the heighest scoring or the heighest scoring with a triple letter (l, h, t)?")
+    if l_h_or_t == 'l':
+        longest_word = find_word(l_h_or_t, players_tiles, dictionary)
         console.print(f"Longest word is {longest_word}: {len(longest_word)}")
-    elif l_or_h == 'h':
-        heighest_scoring_word = find_word(l_or_h, players_tiles, dictionary)
-        console.print(f"Heighest scoring word is {heighest_scoring_word}: {word_score(heighest_scoring_word)}")
+    elif l_h_or_t == 'h':
+        heighest_scoring_word = find_word(l_h_or_t, players_tiles, dictionary)
+        console.print(f"Heighest scoring word is {heighest_scoring_word}: {word_score(heighest_scoring_word, 'n')}")
+    elif l_h_or_t == 't':
+        heighest_scoring_word_with_triple = find_word(l_h_or_t, players_tiles, dictionary)
+        console.print(f"Heighest scoring word with a triple is is {heighest_scoring_word_with_triple}: {word_score(heighest_scoring_word_with_triple, 'y')}")
 
 
 main()
