@@ -20,7 +20,7 @@ ONE_TILE = ['k', 'j', 'x', 'q', 'z']
 
 
 
-def word_score(word):
+def word_score(word, is_triple):
     total = 0
     for letter in word:
 
@@ -40,6 +40,7 @@ def word_score(word):
             total += 10
         else:
             console.print("Word must only contain letters")
+        
 
     return total 
 
@@ -81,12 +82,28 @@ def get_dictionary():
     return open("dictionary.txt", "r")
 
 
-def find_longest_word(tiles, dictionary):
-    current_longest = ''
+def find_longest_word(word, current_word):
+    if len(word) > len(current_word):
+        current_word = word
+    return current_word
+
+
+def find_heighest_scoring_word(word, current_word):
+
+    if word_score(word) > word_score(current_word):
+        current_word = word
+    return current_word
+
+
+
+
+
+def find_word(l_or_h, tiles, dictionary):
+    current_word = ''
     dictionary = list(dictionary)
     not_in_word = 0
     for word in dictionary:
-        word = str(word)
+        word = word[:-1]
         removed_letters = []
 
         if len(word) > 7:
@@ -96,19 +113,17 @@ def find_longest_word(tiles, dictionary):
             if tiles.count(letter) > 0:
                 removed_letters.append(letter)
                 tiles.remove(letter)
-            elif letter != '\n': 
+            else: 
                 not_in_word = 1
 
-        if not_in_word == 0 and len(word) > len(current_longest):
-            current_longest = word
-            console.print(word)
+        if not_in_word == 0 and l_or_h == 'l':
+            current_word = find_longest_word(word, current_word)
+        elif not_in_word == 0 and l_or_h == 'h':
+            current_word = find_heighest_scoring_word(word, current_word)
         for letter in removed_letters:
             tiles.append(letter)
         not_in_word = 0
-
-    return current_longest
-                    
-
+    return current_word
 
 
 def main():
@@ -116,9 +131,14 @@ def main():
     players_tiles = get_players_tiles(bag_of_letters)
     dictionary = get_dictionary()
     console.print(players_tiles)
-    longest_word = find_longest_word(players_tiles, dictionary)
-    console.print(longest_word)
-    console.print(players_tiles)
+    l_or_h = Prompt.ask("Do you want the longest or the heighest scoring (l or h)?")
+    if l_or_h == 'l':
+        longest_word = find_word(l_or_h, players_tiles, dictionary)
+    
+        console.print(f"Longest word is {longest_word}: {len(longest_word)}")
+    elif l_or_h == 'h':
+        heighest_scoring_word = find_word(l_or_h, players_tiles, dictionary)
+        console.print(f"Heighest scoring word is {heighest_scoring_word}: {word_score(heighest_scoring_word)}")
 
 
 main()
