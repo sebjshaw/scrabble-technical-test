@@ -72,7 +72,7 @@ def create_bag_of_letters():
 def get_players_tiles(bag):
     tiles = []
     for i in range(7):
-        random_tile = random.randint(0,len(bag))
+        random_tile = random.randint(0,len(bag)-1)
         tiles.append(bag.pop(random_tile))
     return tiles
 
@@ -84,19 +84,28 @@ def get_dictionary():
 def find_longest_word(tiles, dictionary):
     current_longest = ''
     dictionary = list(dictionary)
+    not_in_word = 0
     for word in dictionary:
-        console.print(current_longest)
         word = str(word)
-        not_in_tiles = 0
+        removed_letters = []
+
         if len(word) > 7:
             continue
+
         for letter in word:
-            if letter in tiles:
-                word_length += 1
-            else:
-                break
-        if len(word) > len(current_longest) and not_in_tiles == 0:
+            if tiles.count(letter) > 0:
+                removed_letters.append(letter)
+                tiles.remove(letter)
+            elif letter != '\n': 
+                not_in_word = 1
+
+        if not_in_word == 0 and len(word) > len(current_longest):
             current_longest = word
+            console.print(word)
+        for letter in removed_letters:
+            tiles.append(letter)
+        not_in_word = 0
+
     return current_longest
                     
 
@@ -106,16 +115,20 @@ def main():
     bag_of_letters = create_bag_of_letters()
     players_tiles = get_players_tiles(bag_of_letters)
     dictionary = get_dictionary()
-    longest_word = find_longest_word(players_tiles, dictionary)
     console.print(players_tiles)
+    longest_word = find_longest_word(players_tiles, dictionary)
     console.print(longest_word)
+    console.print(players_tiles)
 
 
 main()
+
+# dictionary = list(get_dictionary())
+# console.print(len(dictionary[0]))
+
 
 # test_dictionary = ['world', 'it', 'is', 'seb', 'hello']
 
 # test_tiles = ['h', 'l', 'e', 'i', 't', 'l', 'o']
 
 # console.print(find_longest_word(test_tiles, test_dictionary))
-
