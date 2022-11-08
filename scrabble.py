@@ -4,49 +4,23 @@ from rich.console import Console
 
 console = Console(record=True)
 
-ONE_POINT_LETTERS = ['e', 'a', 'i', 'o', 'n', 'r', 't', 'l', 's', 'u']
-TWO_POINT_LETTERS = ['d', 'g']
-THREE_POINT_LETTERS = ['b', 'c', 'm', 'p']
-FOUR_POINT_LETTERS = ['f', 'h', 'v', 'w', 'y']
-FIVE_POINT_LETTER = 'k'
-EIGHT_POINT_LETTERS = ['j', 'x']
-TEN_POINT_LETTERS = ['q', 'z']
 
-SIX_TILES = ['n', 'r', 't']
-FOUR_TILES =['l', 's', 'u', 'd']
-TWO_TILES = ['b', 'c', 'm', 'p', 'f', 'h', 'v', 'w', 'y']
-ONE_TILE = ['k', 'j', 'x', 'q', 'z']
+letter_score = {'a':1,'b':3,'c':3,'d':2,'e':1,'f':4,'g':2,'h':4,'i':1,'j':8,'k':5,'l':1,'m':3,'n':1,'o':1,'p':3,'q':10,'r':1,'s':1,'t':1,'u':1,'v':4,'w':4,'x':8,'y':4,'z':10}
 
-
+letter_frequency = {'a':9,'b':2,'c':2,'d':4,'e':12,'f':2,'g':3,'h':2,'i':9,'j':1,'k':1,'l':4,'m':2,'n':6,'o':8,'p':2,'q':1,'r':6,'s':4,'t':6,'u':4,'v':2,'w':2,'x':1,'y':2,'z':1}
 
 
 def word_score(word, is_triple):
     total = 0
     heighest_letter = 0
-    for letter in word:
-        current_letter = 0
+    for letter in word.lower():
+        current_letter = letter_score[letter]
+        total += letter_score[letter]
 
-        if letter in ONE_POINT_LETTERS:
-            current_letter = 1
-        elif letter in TWO_POINT_LETTERS:
-            current_letter = 2
-        elif letter in THREE_POINT_LETTERS:
-            current_letter = 3
-        elif letter in FOUR_POINT_LETTERS:
-            current_letter = 4
-        elif letter == FIVE_POINT_LETTER:
-            current_letter = 5
-        elif letter in EIGHT_POINT_LETTERS:
-            current_letter = 8
-        elif letter in TEN_POINT_LETTERS:
-            current_letter = 10
-        else:
-            console.print("Word must only contain letters")
         
         if current_letter > heighest_letter:
             heighest_letter = current_letter
         
-        total += current_letter
 
     if is_triple == 'y':
         return total + 2*heighest_letter
@@ -54,31 +28,14 @@ def word_score(word, is_triple):
     return total
 
 
-
 def create_bag_of_letters():
     bag = []
-    for i in range(12):
-        bag.append('e')
-    for i in range(9):
-        bag.append('a')
-        bag.append('i')
-    for i in range(8):
-        bag.append('o')
-    for letter in SIX_TILES:
-        for i in range(6):
+    for letter in letter_frequency:
+        frequency = letter_frequency.get(letter)
+        for i in range(frequency):
             bag.append(letter)
-    for letter in FOUR_TILES:
-        for i in range(4):
-            bag.append(letter)
-    for i in range(3):
-        bag.append('g')
-    for letter in TWO_TILES:
-        for i in range(2):
-            bag.append(letter)
-    for letter in ONE_TILE:
-        bag.append(letter)
     return bag
-    
+
 
 def get_players_tiles(bag):
     tiles = []
@@ -164,6 +121,9 @@ def main():
 
 
 main()
+
+
+# print(word_score('Guardian', 'n'))
 
 # dictionary = list(get_dictionary())
 # console.print(len(dictionary[0]))
