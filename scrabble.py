@@ -69,9 +69,6 @@ def find_heighest_scoring_word(word, current_word):
     return current_word
 
 
-
-
-
 def find_word(l_h_or_t, tiles, dictionary):
     current_word = ''
     words = list(dictionary)
@@ -89,6 +86,7 @@ def find_word(l_h_or_t, tiles, dictionary):
                 tiles.remove(letter)
             else: 
                 not_in_word = 1
+                break
 
         if not_in_word == 0 and l_h_or_t == 'l':
             current_word = find_longest_word(word, current_word)
